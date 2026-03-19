@@ -8,7 +8,7 @@ description: >
   existing SKILL.md, or asks "how do I write a good skill", "help me make a skill for X",
   "review my SKILL.md", or "turn this workflow into a skill". Trigger even if the user
   just says "let's make a skill" or describes a workflow they want to capture.
-license: MIT
+license: Apache-2.0
 metadata:
   author: lirantal
   version: 1.0.0

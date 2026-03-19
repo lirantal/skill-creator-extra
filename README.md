@@ -1,6 +1,6 @@
 # skill-creator-extra
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](skills/skill-creator-extra/SKILL.md)
 [![Works with Claude Code](https://img.shields.io/badge/Claude%20Code-skill-blueviolet)](https://claude.ai/code)
 
@@ -63,7 +63,7 @@ claude skill add https://github.com/lirantal/skill-creator-extra
 
 ## License
 
-MIT © [lirantal](https://github.com/lirantal)
+Apache-2.0 © [lirantal](https://github.com/lirantal)
 
 ---
 
