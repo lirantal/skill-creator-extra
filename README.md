@@ -64,3 +64,9 @@ claude skill add https://github.com/lirantal/skill-creator-extra
 ## License
 
 MIT © [lirantal](https://github.com/lirantal)
+
+---
+
+## Author
+
+skill-creator-extra © Liran Tal, Released under the Apache-2.0 License.
