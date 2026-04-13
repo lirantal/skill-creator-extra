@@ -28,6 +28,14 @@ The official skill creator plugin handles the core loop of draft → test → ev
 → improve. These phases pick up where it leaves off, adding the craft that turns a
 functional skill into an excellent one.
 
+Before starting, identify which kind of skill you're building:
+- **Capability skills** help the agent do something the base model can't do
+  consistently on its own (e.g., filling PDF forms, calling a niche API). These
+  may become unnecessary as models improve — evals will tell you when.
+- **Preference skills** encode a specific workflow or team convention (e.g., your
+  code review steps, your deploy process). These are durable but need to stay in
+  sync with your actual process.
+
 ---
 
 ### Phase 1: Start with the official skill creator
@@ -70,6 +78,19 @@ The loop (execute → analyze → fix → verify → repeat) is what makes a ski
 useful rather than a prompt that stops after one command. Without an explicit repeat
 step, Claude will often report findings and wait rather than driving to resolution.
 
+**Keep steps at the goal level, not the micro-procedure level.** Each step should
+describe *what to achieve*, not the exact commands to run. Compare:
+
+- Too prescriptive: "Step 1: Read the config file. Step 2: Find the database URL.
+  Step 3: Update the port. Step 4: Write the file back."
+- Goal-level: "Step 1: Update the database port in the config to the user's value."
+
+Provide constraints ("always run tests before opening a PR", "never push directly
+to main") rather than dictating every shell command. The agent is smart enough to
+figure out *how* — your job is to tell it *what* and *why*. If an exact sequence
+truly matters and doing step 3 before step 2 breaks things, that belongs in a
+script in `scripts/`, not in prose instructions.
+
 **Done when:** Every use-case in the skill has a goal, numbered steps including a
 verify/repeat step, and an explicit done condition.
 
@@ -98,6 +119,10 @@ recommended optional fields. Check each one:
 - Lead with the outcome, not the mechanism:
   - Good: "Finds and fixes security vulnerabilities in your project..."
   - Bad: "Runs Snyk CLI commands across four scanning domains..."
+- State when the skill should **not** fire. Without negative cases, a broad
+  description will hijack unrelated requests. Example: "Use when working with
+  PDF files. Do NOT use for general document editing, spreadsheets, or plain
+  text files."
 
 **`license`** (recommended for open-source skills)
 - Common values: `MIT`, `Apache-2.0`
@@ -190,11 +215,24 @@ Instructions should be direct commands: "Run the scan", "Prioritize Critical and
 High severity first", "Re-run to confirm the finding is gone." Not: "You should
 consider running the scan" or "It may be helpful to prioritize..."
 
+**Lead with examples, not explanations**
+
+A 5-line code snippet or concrete before/after beats a 5-paragraph explanation.
+When the skill needs to teach the agent an API, a format, or a convention, show
+it rather than describe it. The agent generalizes better from examples than from
+abstract rules.
+
 **Lean prompts**
 
 Remove anything that isn't pulling its weight. If a sentence doesn't change what
 Claude does, cut it. Long skills aren't more powerful — they're harder to follow
 and more likely to cause Claude to lose the thread.
+
+**Don't overfit to test prompts**
+
+Avoid "fiddly" wording tweaks that only pass your three test cases. A good skill
+works across a wide range of invocations, not just the ones you evaluated against.
+If a change improves one test but makes three others worse, it's not an improvement.
 
 **Done when:** The opening positions the skill around outcomes. Instructions use
 imperative form and explain the why. The skill body has no filler sentences.
@@ -212,15 +250,22 @@ If the SKILL.md body is approaching 500 lines, the skill needs a second layer
 of hierarchy. Move domain-specific content into a `references/` folder and replace
 it in SKILL.md with a pointer and a clear statement of when to read it.
 
-Reference file organization:
+Folder organization:
 ```
 skill-name/
 ├── SKILL.md
-└── references/
-    ├── domain-a.md     # read when working on domain A
-    ├── domain-b.md     # read when working on domain B
-    └── domain-c.md     # read when working on domain C
+├── scripts/            # reusable code the agent can run
+├── references/         # docs the agent reads on demand
+│   ├── domain-a.md     # read when working on domain A
+│   ├── domain-b.md     # read when working on domain B
+│   └── domain-c.md     # read when working on domain C
+└── assets/             # templates, images, or files used in output
 ```
+
+Use `scripts/` for exact procedures where order matters and mistakes are costly —
+the agent runs the script rather than recreating the steps from prose. Use
+`references/` for domain knowledge the agent reads on demand. Use `assets/` for
+templates or static files the agent copies or fills in.
 
 Each reference file should have a table of contents if it exceeds 300 lines.
 SKILL.md should tell Claude exactly when to read each file — not just list them,
@@ -229,6 +274,16 @@ but say "read `references/domain-a.md` when the user is asking about X."
 **Done when:** SKILL.md is under 500 lines. Any domain-specific detail that would
 push it over lives in `references/`. Every reference file is pointed to with
 explicit guidance on when to load it.
+
+---
+
+### Lifecycle: know when to retire a skill
+
+Periodically run evals *without* the skill installed. If they still pass, the
+base model has absorbed the skill's value and the skill is adding context overhead
+for no benefit. This applies especially to capability skills — as models improve,
+the gap narrows. Preference skills rarely retire on their own, but they do go
+stale; keep them in sync with the actual process they encode.
 
 ---
 
