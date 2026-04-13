@@ -50,14 +50,7 @@ The enhancements are most useful once a working draft exists.
 
 ### Phase 2: Design around concrete use-cases
 
-The most common failure mode in skill design is writing a reference document instead
-of a workflow. A reference document tells Claude what tools exist. A workflow tells
-Claude what to *do* with them and when it's *done*.
-
-Review the draft skill and ask: does it have 2–3 concrete use-cases, or does it
-read like a CLI manual?
-
-Each use-case must answer three questions:
+Review the draft skill for 2–3 concrete use-cases. Each use-case must answer three questions:
 - **What is the goal?** — the outcome the user wants, stated plainly
 - **What are the steps?** — numbered, specific, executable
 - **When is it done?** — a clear completion condition that Claude can verify
@@ -246,7 +239,7 @@ explicit guidance on when to load it.
 User says: "I want to make a skill for deploying to AWS using our internal scripts."
 
 Actions:
-1. Start Phase 1 — invoke the official skill creator plugin to capture intent,
+1. Phase 1 — run the skill creator plugin (see Phase 1) to capture intent,
    draft the skill, and run evals
 2. Once a draft exists, apply Phase 2 — identify the concrete use-cases
    (e.g., "deploy to staging", "deploy to production", "rollback a release")
@@ -293,8 +286,7 @@ User says: "We just walked through how I handle PR reviews — turn that into a 
 Actions:
 1. Extract the workflow from the conversation: the tools used, the sequence,
    any corrections the user made, the expected output format
-2. Run Phase 1 to draft the skill from what was observed, filling gaps with
-   the user before proceeding
+2. Run Phase 1 to draft the skill, filling any gaps with the user before proceeding
 3. Apply Phases 2–6 to shape the draft into a well-structured skill
 
 Result: The demonstrated workflow is captured as a reusable skill that another
@@ -309,7 +301,7 @@ Cause: The description is too narrow or too abstract. It describes what the skil
 does mechanically but doesn't list the natural-language phrases users actually say.
 Solution: Apply Phase 3. Rewrite the description to include 4–6 specific user
 phrases. Add a "trigger even if the user doesn't mention [tool] by name" clause.
-Then run the description optimization loop from the official skill creator.
+Re-run Phase 1 evals to validate the updated description.
 
 ---
 
