@@ -67,6 +67,10 @@ Apache-2.0 © [lirantal](https://github.com/lirantal)
 
 ---
 
+## Contributing
+
+Please consult [CONTRIBUTING](./CONTRIBUTING.md) for guidelines on contributing to this project.
+
 ## Author
 
 skill-creator-extra © Liran Tal, Released under the Apache-2.0 License.
